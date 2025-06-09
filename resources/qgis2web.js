@@ -194,12 +194,30 @@ function createPopupField(currentFeature, currentFeatureKeys, layer) {
             : "";
       } else {
         var fieldValue = currentFeature.get(currentFeatureKeys[i]);
+        // Cek jika fieldValue adalah share link Google Drive
+        var googleDriveMatch =
+          typeof fieldValue === "string" &&
+          fieldValue.match(
+            /https:\/\/drive\.google\.com\/file\/d\/([^\/]+)\/view/
+          );
         if (/\.(gif|jpg|jpeg|tif|tiff|png|avif|webp|svg)$/i.test(fieldValue)) {
           popupField +=
             fieldValue != null
               ? '<img src="images/' +
                 fieldValue.replace(/[\\\/:]/g, "_").trim() +
-                '" /></td>'
+                '" style="max-width:250px;max-height:200px;" /></td>'
+              : "";
+        }
+        // Tambahkan pengecekan Google Drive link
+        else if (googleDriveMatch) {
+          var fileId = googleDriveMatch[1];
+          var directUrl =
+            "https://drive.google.com/uc?export=view&id=" + fileId;
+          popupField +=
+            fieldValue != null
+              ? '<img src="' +
+                directUrl +
+                '" style="max-width:250px;max-height:200px;" /></td>'
               : "";
         } else if (/\.(mp4|webm|ogg|avi|mov|flv)$/i.test(fieldValue)) {
           popupField +=

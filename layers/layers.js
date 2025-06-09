@@ -450,7 +450,7 @@ lyr_JenisBibit_8.set("fieldAliases", {
   Keterangan: "Keterangan",
   File: "File",
   Foto: "Foto",
-  //   simbology: "simbology",
+  q2wHide_simbology: "simbology",
 });
 lyr_Titik_9.set("fieldAliases", {
   OBJECTID: "OBJECTID",
@@ -615,7 +615,7 @@ lyr_JenisBibit_8.set("fieldImages", {
   Keterangan: "Hidden",
   File: "Hidden",
   Foto: "ExternalResource",
-  //   simbology: "Hidden",
+  q2wHide_simbology: "Hidden",
 });
 lyr_Titik_9.set("fieldImages", {
   OBJECTID: "TextEdit",
@@ -773,6 +773,7 @@ lyr_JenisBibit_8.set("fieldLabels", {
   Media_Dasa: "inline label - always visible",
   Pemadatan: "inline label - always visible",
   Foto: "no label",
+  q2wHide_simbology: "hidden field",
 });
 lyr_Titik_9.set("fieldLabels", {
   OBJECTID: "no label",
