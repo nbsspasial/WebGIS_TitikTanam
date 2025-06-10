@@ -134,7 +134,6 @@ function createPopupField(currentFeature, currentFeatureKeys, layer) {
       currentFeatureKeys[i] != "layerObject" &&
       currentFeatureKeys[i] != "idO"
     ) {
-      // ➕ Judul Hasil Verifikasi
       if (currentFeatureKeys[i] === "Sesuai_Sta") {
         popupText +=
           '<tr><td colspan="2"><strong style="text-decoration:underline; font-size:1.2em;">Hasil Verifikasi</strong></td></tr>';
@@ -151,6 +150,7 @@ function createPopupField(currentFeature, currentFeatureKeys, layer) {
           continue;
         }
       }
+
       if (
         layer.get("fieldLabels")[currentFeatureKeys[i]] ==
           "inline label - always visible" ||
@@ -164,6 +164,7 @@ function createPopupField(currentFeature, currentFeatureKeys, layer) {
       } else {
         popupField += '<td colspan="2">';
       }
+
       if (
         layer.get("fieldLabels")[currentFeatureKeys[i]] ==
         "header label - visible with data"
@@ -183,49 +184,48 @@ function createPopupField(currentFeature, currentFeatureKeys, layer) {
           layer.get("fieldAliases")[currentFeatureKeys[i]] +
           "</strong><br />";
       }
+
+      var fieldValue = currentFeature.get(currentFeatureKeys[i]);
+      var isImageField =
+        layer.get("fieldImages")[currentFeatureKeys[i]] === "ExternalResource";
+
       if (
-        layer.get("fieldImages")[currentFeatureKeys[i]] != "ExternalResource"
+        typeof fieldValue === "string" &&
+        fieldValue.includes("lh3.googleusercontent.com")
       ) {
+        // Deteksi link Googleusercontent, tampilkan gambar
         popupField +=
-          currentFeature.get(currentFeatureKeys[i]) != null
-            ? autolinker.link(
-                currentFeature.get(currentFeatureKeys[i]).toLocaleString()
-              ) + "</td>"
+          '<img src="' +
+          fieldValue +
+          '" style="max-width:500px;max-height:400px;" /></td>';
+      } else if (!isImageField) {
+        // Bukan gambar, tampilkan teks atau link
+        popupField +=
+          fieldValue != null
+            ? autolinker.link(fieldValue.toLocaleString()) + "</td>"
             : "";
       } else {
-        var fieldValue = currentFeature.get(currentFeatureKeys[i]);
-        // Cek jika fieldValue adalah share link Google Drive
-        var googleDriveMatch =
-          typeof fieldValue === "string" &&
-          fieldValue.match(
-            /https:\/\/drive\.google\.com\/file\/d\/([^\/]+)\/view/
-          );
-        if (/\.(gif|jpg|jpeg|tif|tiff|png|avif|webp|svg)$/i.test(fieldValue)) {
-          popupField +=
-            fieldValue != null
-              ? '<img src="images/' +
-                fieldValue.replace(/[\\\/:]/g, "_").trim() +
-                '" style="max-width:250px;max-height:200px;" /></td>'
-              : "";
+        // Gambar eksternal dari Drive lama atau lainnya
+        var imgSrc = null;
+        if (typeof fieldValue === "string") {
+          if (fieldValue.includes("drive.google.com/uc?export=view&id=")) {
+            imgSrc = fieldValue;
+          } else {
+            var match = fieldValue.match(
+              /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)\//
+            );
+            var fileId = match ? match[1] : null;
+            if (fileId) {
+              imgSrc = "https://drive.google.com/uc?export=view&id=" + fileId;
+            }
+          }
         }
-        // Tambahkan pengecekan Google Drive link
-        else if (googleDriveMatch) {
-          var fileId = googleDriveMatch[1];
-          var directUrl =
-            "https://drive.google.com/uc?export=view&id=" + fileId;
+
+        if (imgSrc) {
           popupField +=
-            fieldValue != null
-              ? '<img src="' +
-                directUrl +
-                '" style="max-width:250px;max-height:200px;" /></td>'
-              : "";
-        } else if (/\.(mp4|webm|ogg|avi|mov|flv)$/i.test(fieldValue)) {
-          popupField +=
-            fieldValue != null
-              ? '<video controls><source src="images/' +
-                fieldValue.replace(/[\\\/:]/g, "_").trim() +
-                '" type="video/mp4">Il tuo browser non supporta il tag video.</video></td>'
-              : "";
+            '<img src="' +
+            imgSrc +
+            '" style="max-width:500px;max-height:400px;" /></td>';
         } else {
           popupField +=
             fieldValue != null
@@ -233,6 +233,7 @@ function createPopupField(currentFeature, currentFeatureKeys, layer) {
               : "";
         }
       }
+
       popupText += "<tr>" + popupField + "</tr>";
     }
   }

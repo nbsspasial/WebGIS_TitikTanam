@@ -152,9 +152,10 @@ td video {
 }
 #top-right-container {
   position: absolute;
-  right: 0;
-  top: 0;
+  right: 10px;
+  top: 60px;
   display: contents;
+  z-index: 10001;
 }
 #bottom-right-container {
   position: absolute;
@@ -372,6 +373,7 @@ td video {
   margin: 1px;
   max-height: calc(100vh - 200px);
   box-sizing: unset;
+  z-index: 11000 !important;
 }
 
 .layer-switcher.shown {
@@ -383,7 +385,7 @@ td video {
   border-radius: 5px;
   font-size: x-large;
   font-family: serif;
-  z-index: 2;
+  z-index: 11000 !important;
 }
 
 .layer-switcher img {
