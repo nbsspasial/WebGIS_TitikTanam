@@ -4,8 +4,6 @@ var map = new ol.Map({
   layers: layersList,
   view: new ol.View({
     extent: [10572224.777305, 486914.425979, 10739811.369186, 646047.515526],
-    maxZoom: 18,
-    minZoom: 1,
     center: [10657350.506436, 595450.189924], // Koordinat 5.339426°, 95.74074°
     zoom: 16,
   }),
